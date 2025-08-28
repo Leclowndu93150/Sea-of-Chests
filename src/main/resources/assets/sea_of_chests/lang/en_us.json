@@ -1,0 +1,7 @@
+{
+  "item.sea_of_chests.lockpick": "Lockpick",
+  "item.sea_of_chests.unlocking_station": "Unlocking Station",
+  "block.sea_of_chests.unlocking_station": "Unlocking Station",
+  "container.sea_of_chests.unlocking_station": "Unlocking Station",
+  "creativetab.sea_of_chests_tab": "Sea of Chests"
+}

@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.leclowndu93150.sea_of_chests.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "sea_of_chests.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "client.ChestRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
