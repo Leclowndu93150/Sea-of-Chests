@@ -1,6 +1,7 @@
 package com.leclowndu93150.sea_of_chests.network;
 
 import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
+import com.leclowndu93150.sea_of_chests.client.ClientCacheHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,6 +38,7 @@ public class UpdateLockStatePacket {
                 chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
                     chunkLockedChests.setLocked(pos, locked);
                 });
+                ClientCacheHandler.onLockStateChanged(pos, locked);
             }
         });
         return true;
