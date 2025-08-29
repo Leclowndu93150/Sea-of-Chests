@@ -134,6 +134,18 @@ repositories {
     maven {
         url = "https://cursemaven.com"
     }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        forRepositories(fg.repository) // Only add this if you're using ForgeGradle, otherwise remove this line
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 dependencies {
@@ -145,7 +157,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     implementation fg.deobf("curse.maven:carry-on-274259:4882500")
-
+    implementation fg.deobf("curse.maven:valkyrien-skies-258371:6819743")
+    implementation fg.deobf("curse.maven:kotlin-for-forge-351264:5402061")
+    implementation fg.deobf("curse.maven:cloth-config-348521:5729105")
+    implementation fg.deobf("maven.modrinth:carryon-vs-compat:aAzEaE8p")
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
 }

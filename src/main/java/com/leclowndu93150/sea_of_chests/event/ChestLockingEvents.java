@@ -3,6 +3,7 @@ package com.leclowndu93150.sea_of_chests.event;
 import com.leclowndu93150.sea_of_chests.SeaOfChests;
 import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
 import com.leclowndu93150.sea_of_chests.capability.WorldLockedChestHandlerProvider;
+import com.leclowndu93150.sea_of_chests.init.ModItems;
 import com.leclowndu93150.sea_of_chests.network.ModNetworking;
 import com.leclowndu93150.sea_of_chests.network.UpdateLockStatePacket;
 import com.leclowndu93150.sea_of_chests.util.ChestUtils;
@@ -10,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -38,6 +40,11 @@ public class ChestLockingEvents {
 
                 chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
                     if (chunkLockedChests.isLocked(pos)) {
+                        ItemStack heldItem = player.getItemInHand(event.getHand());
+                        if (heldItem.getItem() == ModItems.MAGNIFYING_GLASS.get() && player.isShiftKeyDown()) {
+                            return;
+                        }
+                        
                         event.setCanceled(true);
                         
                         player.displayClientMessage(
