@@ -28,7 +28,6 @@ public class CarryOnIntegration {
     public static final String SEA_OF_CHESTS_LOCKED_KEY = "seaOfChests_locked";
     
     public static boolean isCarryOnLoaded() {
-        System.out.println("CarryOn loaded: " + ModList.get().isLoaded("carryon"));
         return ModList.get().isLoaded("carryon");
     }
     
@@ -61,6 +60,9 @@ public class CarryOnIntegration {
         
         if (wasLocked[0]) {
             storeLockStateInCarryData(player, true);
+            if (level.isClientSide()) {
+                onClientChestPickedUp(pos);
+            }
         }
         
         return true;
@@ -111,6 +113,11 @@ public class CarryOnIntegration {
     @OnlyIn(Dist.CLIENT)
     public static void onClientChestPlaced(BlockPos pos) {
         ClientCacheHandler.onLockStateChanged(pos, true);
+    }
+    
+    @OnlyIn(Dist.CLIENT)
+    public static void onClientChestPickedUp(BlockPos pos) {
+        ClientCacheHandler.onLockStateChanged(pos, false);
     }
     
     public static void storeLockStateInCarryData(ServerPlayer player, boolean locked) {
