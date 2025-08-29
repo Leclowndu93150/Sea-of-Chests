@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
 public class PlacementHandlerMixin {
     
     @Inject(method = "tryPlaceBlock",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockEntity(Lnet/minecraft/world/level/block/entity/BlockEntity;)V", shift = At.Shift.AFTER))
+            at = @At(value = "INVOKE", target = "Ltschipp/carryon/common/carry/CarryOnData;clear()V", shift = At.Shift.BEFORE))
     private static void seaOfChests_onBlockPlacement(ServerPlayer player, BlockPos pos, Direction facing, BiFunction<BlockPos, BlockState, Boolean> placementCallback, CallbackInfoReturnable<Boolean> cir) {
         BlockState state = CarryOnDataManager.getCarryData(player).getBlock();
         CarryOnIntegration.onChestPlacement(player, pos, state);

@@ -15,9 +15,9 @@ public class ChestUtils {
     
     public static void showPeekScreen(Player player, RandomizableContainerBlockEntity container, BlockPos pos) {
         if (player instanceof ServerPlayer serverPlayer) {
-            if (container.lootTable != null) {
-                container.unpackLootTable(player);
-            }
+             if (container.lootTable != null) {
+                 container.unpackLootTable(player);
+             }
             
             MenuProvider peekProvider = new MenuProvider() {
                 @Override
