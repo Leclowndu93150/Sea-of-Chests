@@ -36,5 +36,15 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('O', Blocks.OBSIDIAN)
                 .unlockedBy(getHasName(Items.DIAMOND), has(Items.DIAMOND))
                 .save(consumer);
+        
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ModItems.MAGNIFYING_GLASS.get())
+                .pattern(" G ")
+                .pattern(" I ")
+                .pattern(" S ")
+                .define('G', Items.GLASS_PANE)
+                .define('I', Items.IRON_INGOT)
+                .define('S', Items.STICK)
+                .unlockedBy(getHasName(Items.GLASS_PANE), has(Items.GLASS_PANE))
+                .save(consumer);
     }
 }

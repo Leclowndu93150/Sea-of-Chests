@@ -9,7 +9,9 @@
     "ChunkManagerMixin",
     "ChunkMixin",
     "ChunkUnloadMixin",
-    "MixinLevelChunk"
+    "MixinLevelChunk",
+    "carryon.PickupHandlerMixin",
+    "carryon.PlacementHandlerMixin"
   ],
   "client": [
     "client.LevelRendererMixin"

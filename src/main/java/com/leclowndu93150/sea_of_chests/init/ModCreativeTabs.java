@@ -19,6 +19,7 @@ public class ModCreativeTabs {
                     .title(Component.translatable("creativetab.sea_of_chests_tab"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(ModItems.LOCKPICK.get());
+                        output.accept(ModItems.MAGNIFYING_GLASS.get());
                         output.accept(ModItems.UNLOCKING_STATION.get());
                     })
                     .build());

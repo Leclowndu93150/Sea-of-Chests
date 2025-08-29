@@ -1,19 +1,17 @@
 package com.leclowndu93150.sea_of_chests.event;
 
-import com.leclowndu93150.sea_of_chests.ChestLockingTicker;
+import com.leclowndu93150.sea_of_chests.tick.ChestLockingTicker;
 import com.leclowndu93150.sea_of_chests.SeaOfChests;
 import com.leclowndu93150.sea_of_chests.capability.IChunkLockedChests;
 import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
 import com.leclowndu93150.sea_of_chests.capability.IWorldLockedChestHandler;
 import com.leclowndu93150.sea_of_chests.capability.WorldLockedChestHandlerProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 

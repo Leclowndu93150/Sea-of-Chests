@@ -3,6 +3,7 @@ package com.leclowndu93150.sea_of_chests.init;
 import com.leclowndu93150.sea_of_chests.SeaOfChests;
 import com.leclowndu93150.sea_of_chests.item.LockpickItem;
 import com.leclowndu93150.sea_of_chests.item.LockItem;
+import com.leclowndu93150.sea_of_chests.item.MagnifyingGlassItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,6 +22,9 @@ public class ModItems {
 
     public static final RegistryObject<Item> LOCK = ITEMS.register("lock",
             () -> new LockItem(new Item.Properties()));
+    
+    public static final RegistryObject<Item> MAGNIFYING_GLASS = ITEMS.register("magnifying_glass",
+            () -> new MagnifyingGlassItem(new Item.Properties().stacksTo(1)));
     
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

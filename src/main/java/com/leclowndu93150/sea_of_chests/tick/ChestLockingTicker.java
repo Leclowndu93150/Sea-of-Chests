@@ -1,4 +1,4 @@
-package com.leclowndu93150.sea_of_chests;
+package com.leclowndu93150.sea_of_chests.tick;
 
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
