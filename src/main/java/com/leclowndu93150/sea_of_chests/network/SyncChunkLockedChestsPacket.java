@@ -1,23 +1,32 @@
 package com.leclowndu93150.sea_of_chests.network;
 
-import com.leclowndu93150.sea_of_chests.capability.LockedChestsProvider;
+import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class SyncLockedChestsPacket {
+public class SyncChunkLockedChestsPacket {
+    private final ChunkPos chunkPos;
     private final Set<BlockPos> lockedPositions;
     
-    public SyncLockedChestsPacket(Set<BlockPos> lockedPositions) {
+    public SyncChunkLockedChestsPacket(ChunkPos chunkPos, Set<BlockPos> lockedPositions) {
+        this.chunkPos = chunkPos;
         this.lockedPositions = lockedPositions;
     }
     
-    public SyncLockedChestsPacket(FriendlyByteBuf buf) {
+    public SyncChunkLockedChestsPacket(LevelChunk chunk, Set<BlockPos> lockedPositions) {
+        this(chunk.getPos(), lockedPositions);
+    }
+    
+    public SyncChunkLockedChestsPacket(FriendlyByteBuf buf) {
+        this.chunkPos = new ChunkPos(buf.readInt(), buf.readInt());
         int size = buf.readInt();
         this.lockedPositions = new HashSet<>();
         for (int i = 0; i < size; i++) {
@@ -26,6 +35,8 @@ public class SyncLockedChestsPacket {
     }
     
     public void toBytes(FriendlyByteBuf buf) {
+        buf.writeInt(chunkPos.x);
+        buf.writeInt(chunkPos.z);
         buf.writeInt(lockedPositions.size());
         for (BlockPos pos : lockedPositions) {
             buf.writeBlockPos(pos);
@@ -35,14 +46,13 @@ public class SyncLockedChestsPacket {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            // Client side handling
             Minecraft mc = Minecraft.getInstance();
-            if (mc.level != null) {
-                mc.level.getCapability(LockedChestsProvider.LOCKED_CHESTS_CAPABILITY).ifPresent(lockedChests -> {
-                    // Clear existing and set new locked positions
-                    lockedChests.clearAll();
+            if (mc.level != null && mc.level.hasChunk(chunkPos.x, chunkPos.z)) {
+                LevelChunk chunk = mc.level.getChunk(chunkPos.x, chunkPos.z);
+                chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
+                    chunkLockedChests.clear();
                     for (BlockPos pos : lockedPositions) {
-                        lockedChests.setLocked(pos, true);
+                        chunkLockedChests.setLocked(pos, true);
                     }
                 });
             }

@@ -1,6 +1,7 @@
 package com.leclowndu93150.sea_of_chests.block.entity;
 
-import com.leclowndu93150.sea_of_chests.capability.LockedChestsProvider;
+import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
+import com.leclowndu93150.sea_of_chests.capability.WorldLockedChestHandlerProvider;
 import com.leclowndu93150.sea_of_chests.init.ModBlockEntities;
 import com.leclowndu93150.sea_of_chests.init.ModItems;
 import com.leclowndu93150.sea_of_chests.menu.UnlockingStationMenu;
@@ -91,8 +92,9 @@ public class UnlockingStationBlockEntity extends BlockEntity implements Containe
         if (!isUnlocking && items.get(0).is(ModItems.LOCKPICK.get())) {
             BlockEntity above = level.getBlockEntity(worldPosition.above());
             if (above instanceof ChestBlockEntity || above instanceof BarrelBlockEntity) {
-                level.getCapability(LockedChestsProvider.LOCKED_CHESTS_CAPABILITY).ifPresent(lockedChests -> {
-                    if (lockedChests.isLocked(worldPosition.above())) {
+                var chunk = level.getChunkAt(worldPosition.above());
+                chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
+                    if (chunkLockedChests.isLocked(worldPosition.above())) {
                         isUnlocking = true;
                         targetChestPos = worldPosition.above();
                         unlockProgress = 0;
@@ -105,9 +107,14 @@ public class UnlockingStationBlockEntity extends BlockEntity implements Containe
     
     private void completeUnlocking(Level level, BlockPos pos) {
         BlockPos chestPos = pos.above();
-        
-        level.getCapability(LockedChestsProvider.LOCKED_CHESTS_CAPABILITY).ifPresent(lockedChests -> {
-            lockedChests.unlock(chestPos);
+
+        var chunk = level.getChunkAt(chestPos);
+        chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
+            chunkLockedChests.removeLocked(chestPos);
+        });
+
+        level.getCapability(WorldLockedChestHandlerProvider.WORLD_LOCKED_CHEST_HANDLER_CAPABILITY).ifPresent(worldHandler -> {
+            worldHandler.removeChest(chestPos);
         });
         
         items.get(0).shrink(1);

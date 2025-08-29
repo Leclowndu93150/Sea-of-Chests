@@ -1,9 +1,10 @@
 package com.leclowndu93150.sea_of_chests.network;
 
-import com.leclowndu93150.sea_of_chests.capability.LockedChestsProvider;
+import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -30,11 +31,11 @@ public class UpdateLockStatePacket {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            // Client side handling
             Minecraft mc = Minecraft.getInstance();
             if (mc.level != null) {
-                mc.level.getCapability(LockedChestsProvider.LOCKED_CHESTS_CAPABILITY).ifPresent(lockedChests -> {
-                    lockedChests.setLocked(pos, locked);
+                LevelChunk chunk = mc.level.getChunkAt(pos);
+                chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
+                    chunkLockedChests.setLocked(pos, locked);
                 });
             }
         });

@@ -4,13 +4,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import java.util.Set;
+import java.util.Map;
 
-public interface ILockedChests extends INBTSerializable<CompoundTag> {
+public interface IChunkLockedChests extends INBTSerializable<CompoundTag> {
     boolean isLocked(BlockPos pos);
     void setLocked(BlockPos pos, boolean locked);
-    void unlock(BlockPos pos);
-    Set<BlockPos> getLockedChests();
-    void clearInvalidChests();
-    void clearAll();
+    void removeLocked(BlockPos pos);
+    Map<BlockPos, Boolean> getLockedPositions();
+    void clear();
+    int size();
 }

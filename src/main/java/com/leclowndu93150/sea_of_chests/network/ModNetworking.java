@@ -32,16 +32,17 @@ public class ModNetworking {
                 .consumerMainThread(StartUnlockingPacket::handle)
                 .add();
         
-        net.messageBuilder(SyncLockedChestsPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
-                .decoder(SyncLockedChestsPacket::new)
-                .encoder(SyncLockedChestsPacket::toBytes)
-                .consumerMainThread(SyncLockedChestsPacket::handle)
-                .add();
         
         net.messageBuilder(UpdateLockStatePacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
                 .decoder(UpdateLockStatePacket::new)
                 .encoder(UpdateLockStatePacket::toBytes)
                 .consumerMainThread(UpdateLockStatePacket::handle)
+                .add();
+        
+        net.messageBuilder(SyncChunkLockedChestsPacket.class, id(), NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SyncChunkLockedChestsPacket::new)
+                .encoder(SyncChunkLockedChestsPacket::toBytes)
+                .consumerMainThread(SyncChunkLockedChestsPacket::handle)
                 .add();
     }
     

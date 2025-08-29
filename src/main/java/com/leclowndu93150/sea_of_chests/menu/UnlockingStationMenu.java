@@ -82,13 +82,19 @@ public class UnlockingStationMenu extends AbstractContainerMenu {
         if (slot != null && slot.hasItem()) {
             ItemStack slotStack = slot.getItem();
             itemstack = slotStack.copy();
-            
+
             if (index < 2) {
-                if (!this.moveItemStackTo(slotStack, 2, this.slots.size(), true)) {
+                if (!this.moveItemStackTo(slotStack, 2, 38, true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(slotStack, 0, 1, false)) {
-                return ItemStack.EMPTY;
+            } else {
+                if (slotStack.is(ModItems.LOCKPICK.get())) {
+                    if (!this.moveItemStackTo(slotStack, 0, 1, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else {
+                    return ItemStack.EMPTY;
+                }
             }
             
             if (slotStack.isEmpty()) {

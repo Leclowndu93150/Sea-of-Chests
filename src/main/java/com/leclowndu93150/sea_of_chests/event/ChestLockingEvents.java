@@ -1,7 +1,8 @@
 package com.leclowndu93150.sea_of_chests.event;
 
 import com.leclowndu93150.sea_of_chests.SeaOfChests;
-import com.leclowndu93150.sea_of_chests.capability.LockedChestsProvider;
+import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
+import com.leclowndu93150.sea_of_chests.capability.WorldLockedChestHandlerProvider;
 import com.leclowndu93150.sea_of_chests.network.ModNetworking;
 import com.leclowndu93150.sea_of_chests.network.UpdateLockStatePacket;
 import com.leclowndu93150.sea_of_chests.util.ChestUtils;
@@ -10,12 +11,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -33,19 +34,26 @@ public class ChestLockingEvents {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof RandomizableContainerBlockEntity container) {
             if (container instanceof ChestBlockEntity || container instanceof BarrelBlockEntity) {
-                level.getCapability(LockedChestsProvider.LOCKED_CHESTS_CAPABILITY).ifPresent(lockedChests -> {
+                LevelChunk chunk = level.getChunkAt(pos);
+
+                chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
                     boolean isLootChest = container.lootTable != null;
                     
-                    if (isLootChest && !lockedChests.isLocked(pos)) {
-                        lockedChests.setLocked(pos, true);
-                        // Sync to all players
+                    if (isLootChest && !chunkLockedChests.isLocked(pos)) {
+                        chunkLockedChests.setLocked(pos, true);
+                        
+                        level.getCapability(WorldLockedChestHandlerProvider.WORLD_LOCKED_CHEST_HANDLER_CAPABILITY).ifPresent(worldHandler -> {
+                            worldHandler.addChest(pos);
+                        });
+
                         ModNetworking.sendToClients(new UpdateLockStatePacket(pos, true));
-                        if (!level.isClientSide && container.lootTable != null) {
+                        
+                        if (container.lootTable != null) {
                             container.unpackLootTable(player);
                         }
                     }
                     
-                    if (lockedChests.isLocked(pos)) {
+                    if (chunkLockedChests.isLocked(pos)) {
                         event.setCanceled(true);
                         
                         if (!player.isShiftKeyDown()) {

@@ -7,22 +7,22 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LockedChestsProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
-    public static Capability<ILockedChests> LOCKED_CHESTS_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+public class ChunkLockedChestsProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
+    public static Capability<IChunkLockedChests> CHUNK_LOCKED_CHESTS_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
     
-    private ILockedChests lockedChests = null;
-    private final LazyOptional<ILockedChests> optional = LazyOptional.of(this::createLockedChests);
+    private IChunkLockedChests lockedChests = null;
+    private final LazyOptional<IChunkLockedChests> optional = LazyOptional.of(this::createLockedChests);
     
-    private ILockedChests createLockedChests() {
+    private IChunkLockedChests createLockedChests() {
         if (this.lockedChests == null) {
-            this.lockedChests = new LockedChestsImpl();
+            this.lockedChests = new ChunkLockedChestsImpl();
         }
         return this.lockedChests;
     }
     
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == LOCKED_CHESTS_CAPABILITY) {
+        if (cap == CHUNK_LOCKED_CHESTS_CAPABILITY) {
             return optional.cast();
         }
         return LazyOptional.empty();

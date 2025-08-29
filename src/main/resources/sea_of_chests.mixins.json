@@ -5,9 +5,14 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "sea_of_chests.refmap.json",
   "mixins": [
+    "BaseContainerBlockEntityMixin",
+    "ChunkManagerMixin",
+    "ChunkMixin",
+    "ChunkUnloadMixin",
+    "WorldGenMixin"
   ],
   "client": [
-    "client.ChestRendererMixin"
+    "client.LevelRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,17 +1,17 @@
 package com.leclowndu93150.sea_of_chests.event;
 
 import com.leclowndu93150.sea_of_chests.SeaOfChests;
-import com.leclowndu93150.sea_of_chests.capability.ILockedChests;
-import com.leclowndu93150.sea_of_chests.capability.LockedChestsProvider;
-import com.leclowndu93150.sea_of_chests.network.ModNetworking;
-import com.leclowndu93150.sea_of_chests.network.SyncLockedChestsPacket;
+import com.leclowndu93150.sea_of_chests.capability.IChunkLockedChests;
+import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
+import com.leclowndu93150.sea_of_chests.capability.IWorldLockedChestHandler;
+import com.leclowndu93150.sea_of_chests.capability.WorldLockedChestHandlerProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -20,27 +20,12 @@ public class ModEvents {
     
     @SubscribeEvent
     public static void onAttachCapabilitiesLevel(AttachCapabilitiesEvent<Level> event) {
-        event.addCapability(new ResourceLocation(SeaOfChests.MODID, "locked_chests"), new LockedChestsProvider());
+        event.addCapability(new ResourceLocation(SeaOfChests.MODID, "world_locked_chest_handler"), new WorldLockedChestHandlerProvider());
     }
     
     @SubscribeEvent
-    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            Level level = serverPlayer.level();
-            level.getCapability(LockedChestsProvider.LOCKED_CHESTS_CAPABILITY).ifPresent(lockedChests -> {
-                ModNetworking.sendToPlayer(new SyncLockedChestsPacket(lockedChests.getLockedChests()), serverPlayer);
-            });
-        }
-    }
-    
-    @SubscribeEvent 
-    public static void onPlayerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            Level level = serverPlayer.level();
-            level.getCapability(LockedChestsProvider.LOCKED_CHESTS_CAPABILITY).ifPresent(lockedChests -> {
-                ModNetworking.sendToPlayer(new SyncLockedChestsPacket(lockedChests.getLockedChests()), serverPlayer);
-            });
-        }
+    public static void onAttachCapabilitiesChunk(AttachCapabilitiesEvent<LevelChunk> event) {
+        event.addCapability(new ResourceLocation(SeaOfChests.MODID, "chunk_locked_chests"), new ChunkLockedChestsProvider());
     }
     
     @Mod.EventBusSubscriber(modid = SeaOfChests.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -48,7 +33,8 @@ public class ModEvents {
         
         @SubscribeEvent
         public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-            event.register(ILockedChests.class);
+            event.register(IChunkLockedChests.class);
+            event.register(IWorldLockedChestHandler.class);
         }
     }
 }
