@@ -4,6 +4,7 @@ import com.leclowndu93150.sea_of_chests.init.*;
 import com.leclowndu93150.sea_of_chests.network.ModNetworking;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
