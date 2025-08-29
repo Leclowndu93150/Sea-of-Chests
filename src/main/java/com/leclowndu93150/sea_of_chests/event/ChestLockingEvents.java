@@ -37,22 +37,6 @@ public class ChestLockingEvents {
                 LevelChunk chunk = level.getChunkAt(pos);
 
                 chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
-                    boolean isLootChest = container.lootTable != null;
-                    
-                    if (isLootChest && !chunkLockedChests.isLocked(pos)) {
-                        chunkLockedChests.setLocked(pos, true);
-                        
-                        level.getCapability(WorldLockedChestHandlerProvider.WORLD_LOCKED_CHEST_HANDLER_CAPABILITY).ifPresent(worldHandler -> {
-                            worldHandler.addChest(pos);
-                        });
-
-                        ModNetworking.sendToClients(new UpdateLockStatePacket(pos, true));
-                        
-                        if (container.lootTable != null) {
-                            container.unpackLootTable(player);
-                        }
-                    }
-                    
                     if (chunkLockedChests.isLocked(pos)) {
                         event.setCanceled(true);
                         

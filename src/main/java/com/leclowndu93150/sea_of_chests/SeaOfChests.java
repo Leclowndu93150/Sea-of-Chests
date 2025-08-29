@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 public class SeaOfChests {
 
     public static final String MODID = "sea_of_chests";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    static final Logger LOGGER = LogUtils.getLogger();
 
     public SeaOfChests() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

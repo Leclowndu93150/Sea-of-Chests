@@ -9,7 +9,7 @@
     "ChunkManagerMixin",
     "ChunkMixin",
     "ChunkUnloadMixin",
-    "WorldGenMixin"
+    "MixinLevelChunk"
   ],
   "client": [
     "client.LevelRendererMixin"

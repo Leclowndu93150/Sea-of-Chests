@@ -1,5 +1,6 @@
 package com.leclowndu93150.sea_of_chests.event;
 
+import com.leclowndu93150.sea_of_chests.ChestLockingTicker;
 import com.leclowndu93150.sea_of_chests.SeaOfChests;
 import com.leclowndu93150.sea_of_chests.capability.IChunkLockedChests;
 import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
@@ -11,12 +12,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = SeaOfChests.MODID)
 public class ModEvents {
+    
+    @SubscribeEvent
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            ChestLockingTicker.onServerTick();
+        }
+    }
     
     @SubscribeEvent
     public static void onAttachCapabilitiesLevel(AttachCapabilitiesEvent<Level> event) {
