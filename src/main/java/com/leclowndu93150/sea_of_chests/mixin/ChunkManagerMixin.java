@@ -23,15 +23,12 @@ public class ChunkManagerMixin {
     
     @Inject(at = @At("TAIL"), method = "playerLoadedChunk")
     private void playerLoadedChunk(ServerPlayer player, MutableObject<ClientboundLevelChunkWithLightPacket> pkts, LevelChunk chunk, CallbackInfo ci) {
-        System.out.println("SERVER: Player " + player.getName().getString() + " loaded chunk " + chunk.getPos());
-        
-        // Check chunk capability directly - this is where the data should be
         chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
             var chests = chunkLockedChests.getLockedPositions();
-            System.out.println("SERVER: Chunk " + chunk.getPos() + " has " + chests.size() + " locked chests in capability");
+            
             if (!chests.isEmpty()) {
                 Set<BlockPos> positions = chests.keySet();
-                System.out.println("SERVER: Syncing " + positions.size() + " locked chests to player");
+                
                 ModNetworking.sendToPlayer(new SyncChunkLockedChestsPacket(chunk.getPos(), positions), player);
             }
         });

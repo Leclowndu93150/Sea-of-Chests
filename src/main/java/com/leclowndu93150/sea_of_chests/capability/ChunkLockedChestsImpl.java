@@ -49,10 +49,8 @@ public class ChunkLockedChestsImpl implements IChunkLockedChests {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         ListTag list = new ListTag();
-        System.out.println("SERIALIZING: Saving " + lockedPositions.size() + " locked chests to NBT");
         for (BlockPos pos : lockedPositions.keySet()) {
             list.add(NbtUtils.writeBlockPos(pos));
-            System.out.println("SERIALIZING: Saving locked chest at " + pos);
         }
         tag.put("LockedChests", list);
         return tag;
@@ -62,11 +60,10 @@ public class ChunkLockedChestsImpl implements IChunkLockedChests {
     public void deserializeNBT(CompoundTag nbt) {
         lockedPositions.clear();
         ListTag list = nbt.getList("LockedChests", 10);
-        System.out.println("DESERIALIZING: Loading " + list.size() + " locked chests from NBT");
         for (int i = 0; i < list.size(); i++) {
             BlockPos pos = NbtUtils.readBlockPos(list.getCompound(i));
             lockedPositions.put(pos, true);
-            System.out.println("DESERIALIZING: Loaded locked chest at " + pos);
+            
         }
     }
 }
