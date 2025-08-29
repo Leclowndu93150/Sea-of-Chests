@@ -3,7 +3,6 @@ package com.leclowndu93150.sea_of_chests.integration.carryon;
 import com.leclowndu93150.sea_of_chests.SeaOfChests;
 import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
 import com.leclowndu93150.sea_of_chests.capability.WorldLockedChestHandlerProvider;
-import com.leclowndu93150.sea_of_chests.client.ClientCacheHandler;
 import com.leclowndu93150.sea_of_chests.network.ModNetworking;
 import com.leclowndu93150.sea_of_chests.network.UpdateLockStatePacket;
 import net.minecraft.core.BlockPos;
@@ -16,8 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 import tschipp.carryon.common.carry.CarryOnData;
 import tschipp.carryon.common.carry.CarryOnDataManager;
@@ -60,9 +57,6 @@ public class CarryOnIntegration {
         if (wasLocked[0]) {
             CarryOnChestTracker.trackPickup(player, pos, state, true);
             storeLockStateInCarryData(player, true, pos);
-            if (level.isClientSide()) {
-                onClientChestPickedUp(pos);
-            }
         } else {
             CarryOnChestTracker.trackPickup(player, pos, state, false);
         }
@@ -106,21 +100,8 @@ public class CarryOnIntegration {
 
         CarryOnChestTracker.clearTracking(player);
         clearLockStateFromCarryData(player);
-
-        if (player.level().isClientSide()) {
-            onClientChestPlaced(pos);
-        }
+        
         return true;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void onClientChestPlaced(BlockPos pos) {
-        ClientCacheHandler.onLockStateChanged(pos, true);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void onClientChestPickedUp(BlockPos pos) {
-        ClientCacheHandler.onLockStateChanged(pos, false);
     }
 
     public static void storeLockStateInCarryData(ServerPlayer player, boolean locked, BlockPos originalPos) {

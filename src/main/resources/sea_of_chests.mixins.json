@@ -6,6 +6,7 @@
   "refmap": "sea_of_chests.refmap.json",
   "mixins": [
     "BaseContainerBlockEntityMixin",
+    "ChestBlockMixin",
     "ChunkManagerMixin",
     "ChunkMixin",
     "ChunkUnloadMixin",
