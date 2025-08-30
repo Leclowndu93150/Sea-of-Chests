@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tschipp.carryon.common.carry.CarryOnDataManager;
 import tschipp.carryon.common.carry.PlacementHandler;
 
+import javax.annotation.Nullable;
 import java.util.function.BiFunction;
 
 @Mixin(value = PlacementHandler.class, remap = false)
@@ -27,7 +28,7 @@ public class PlacementHandlerMixin {
     
     @Inject(method = "tryPlaceBlock",
             at = @At(value = "INVOKE", target = "Ltschipp/carryon/common/carry/CarryOnData;clear()V", shift = At.Shift.BEFORE))
-    private static void seaOfChests_onBlockPlacement(ServerPlayer player, BlockPos pos, Direction facing, BiFunction<BlockPos, BlockState, Boolean> placementCallback, CallbackInfoReturnable<Boolean> cir) {
+    private static void seaOfChests_onBlockPlacement(ServerPlayer player, BlockPos pos, Direction facing, @Nullable BiFunction<BlockPos, BlockState, Boolean> placementCallback, CallbackInfoReturnable<Boolean> cir) {
         BlockState state = CarryOnDataManager.getCarryData(player).getBlock();
         CarryOnIntegration.onChestPlacement(player, pos, state);
     }

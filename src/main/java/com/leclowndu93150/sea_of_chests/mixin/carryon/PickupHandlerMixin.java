@@ -12,13 +12,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import tschipp.carryon.common.carry.PickupHandler;
 
 import java.util.function.BiFunction;
+import javax.annotation.Nullable;
 
 @Mixin(value = PickupHandler.class, remap = false)
 public class PickupHandlerMixin {
     
     @Inject(method = "tryPickUpBlock", 
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;removeBlockEntity(Lnet/minecraft/core/BlockPos;)V"))
-    private static void seaOfChests_onBlockPickup(ServerPlayer player, BlockPos pos, Level level, BiFunction<BlockState, BlockPos, Boolean> pickupCallback, CallbackInfoReturnable<Boolean> cir) {
+    private static void seaOfChests_onBlockPickup(ServerPlayer player, BlockPos pos, Level level, @Nullable BiFunction<BlockState, BlockPos, Boolean> pickupCallback, CallbackInfoReturnable<Boolean> cir) {
         BlockState state = level.getBlockState(pos);
         CarryOnIntegration.onChestPickup(player, pos, level, state);
     }
