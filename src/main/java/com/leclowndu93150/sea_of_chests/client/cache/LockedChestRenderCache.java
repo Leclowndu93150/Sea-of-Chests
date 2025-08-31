@@ -1,12 +1,19 @@
 package com.leclowndu93150.sea_of_chests.client.cache;
 
+import com.leclowndu93150.sea_of_chests.capability.ChunkLockedChestsProvider;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BarrelBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,6 +55,10 @@ public class LockedChestRenderCache {
         
         public List<CachedLock> getLocks() {
             return locks;
+        }
+        
+        public void removeLock(CachedLock lock) {
+            locks.remove(lock);
         }
         
         public void markDirty() {
@@ -101,5 +112,52 @@ public class LockedChestRenderCache {
     
     public static void putFrustumCached(ChunkPos chunkPos, List<CachedLock> locks) {
         frustumCache.put(chunkPos.toLong(), locks);
+    }
+    
+    public static void validateCache(Level level, ChunkPos chunkPos) {
+        ChunkCache cache = chunkCaches.get(chunkPos);
+        if (cache == null || cache.getLocks().isEmpty()) {
+            return;
+        }
+        
+        LevelChunk chunk = level.getChunk(chunkPos.x, chunkPos.z);
+        chunk.getCapability(ChunkLockedChestsProvider.CHUNK_LOCKED_CHESTS_CAPABILITY).ifPresent(chunkLockedChests -> {
+            Iterator<CachedLock> iterator = cache.getLocks().iterator();
+            boolean changed = false;
+            
+            while (iterator.hasNext()) {
+                CachedLock lock = iterator.next();
+                
+                if (level.isLoaded(lock.pos)) {
+                    BlockEntity blockEntity = level.getBlockEntity(lock.pos);
+                    boolean shouldRemove = false;
+                    
+                    if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof BarrelBlockEntity) {
+                        if (!chunkLockedChests.isLocked(lock.pos)) {
+                            shouldRemove = true;
+                        }
+                    } else {
+                        shouldRemove = true;
+                    }
+                    
+                    if (shouldRemove) {
+                        iterator.remove();
+                        changed = true;
+                    }
+                }
+            }
+            
+            if (changed) {
+                invalidateFrustumCache();
+            }
+        });
+    }
+    
+    public static void validateAllCaches(Level level) {
+        for (ChunkPos chunkPos : chunkCaches.keySet()) {
+            if (level.hasChunk(chunkPos.x, chunkPos.z)) {
+                validateCache(level, chunkPos);
+            }
+        }
     }
 }

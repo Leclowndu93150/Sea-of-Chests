@@ -12,6 +12,7 @@
     "ChunkUnloadMixin",
     "MixinLevelChunk",
     "carryon.PickupHandlerMixin",
+    "carryon.PlacementHandlerAccessor",
     "carryon.PlacementHandlerMixin"
   ],
   "client": [

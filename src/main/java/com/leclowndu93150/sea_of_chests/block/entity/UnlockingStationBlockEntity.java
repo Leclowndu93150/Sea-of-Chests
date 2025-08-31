@@ -5,6 +5,8 @@ import com.leclowndu93150.sea_of_chests.capability.WorldLockedChestHandlerProvid
 import com.leclowndu93150.sea_of_chests.init.ModBlockEntities;
 import com.leclowndu93150.sea_of_chests.init.ModItems;
 import com.leclowndu93150.sea_of_chests.menu.UnlockingStationMenu;
+import com.leclowndu93150.sea_of_chests.network.ModNetworking;
+import com.leclowndu93150.sea_of_chests.network.UpdateLockStatePacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -116,6 +118,8 @@ public class UnlockingStationBlockEntity extends BlockEntity implements Containe
         level.getCapability(WorldLockedChestHandlerProvider.WORLD_LOCKED_CHEST_HANDLER_CAPABILITY).ifPresent(worldHandler -> {
             worldHandler.removeChest(chestPos);
         });
+        
+        ModNetworking.sendToClients(new UpdateLockStatePacket(chestPos, false));
         
         items.get(0).shrink(1);
         

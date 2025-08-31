@@ -36,6 +36,12 @@ import java.util.List;
 public class LockRenderer {
     private static final ItemStack LOCK_ITEM_STACK = new ItemStack(ModItems.LOCK.get());
     private static long frameCount = 0;
+    private static long lastValidationTime = 0;
+    private static final long VALIDATION_INTERVAL = 2000;
+
+    public static float LOCK_X_OFFSET = 0.0f;
+    public static float LOCK_Y_OFFSET = 0.0f;
+    public static float LOCK_SCALE = 0.75f;
     
     public static void renderLocks(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float partialTick) {
         frameCount++;
@@ -44,6 +50,12 @@ public class LockRenderer {
         if (level == null || !level.isClientSide()) return;
         
         if (mc.player == null) return;
+        
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastValidationTime > VALIDATION_INTERVAL) {
+            LockedChestRenderCache.validateAllCaches(level);
+            lastValidationTime = currentTime;
+        }
         
         Camera camera = mc.gameRenderer.getMainCamera();
         Vec3 cameraPos = camera.getPosition();
@@ -138,9 +150,12 @@ public class LockRenderer {
             positionOnBarrel(poseStack, lock.state);
         }
         
+        // Apply custom offsets
+        poseStack.translate(LOCK_X_OFFSET, LOCK_Y_OFFSET, 0);
+        
         double distanceSq = lock.pos.distToCenterSqr(cameraPos.x, cameraPos.y, cameraPos.z);
         float distance = (float) Math.sqrt(distanceSq);
-        float scale = Math.min(0.6f, 8.0f / distance);
+        float scale = Math.min(0.6f, 8.0f / distance) * LOCK_SCALE;
         poseStack.scale(scale, scale, scale);
         
         int light = LevelRenderer.getLightColor(level, lock.pos);
