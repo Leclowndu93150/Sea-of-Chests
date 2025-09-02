@@ -44,6 +44,8 @@ public class LockRenderer {
     public static float LOCK_SCALE = 0.75f;
     
     public static void renderLocks(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float partialTick) {
+        return; // Disabled for performance
+        /*
         frameCount++;
         Minecraft mc = Minecraft.getInstance();
         Level level = mc.level;
@@ -94,10 +96,10 @@ public class LockRenderer {
                 if (cache != null) {
                     List<CachedLock> chunkLocks = new ObjectArrayList<>();
                     for (CachedLock lock : cache.getLocks()) {
+                        if (!frustum.isVisible(lock.boundingBox)) continue;
+                        
                         double distanceSq = lock.pos.distToCenterSqr(cameraPos.x, cameraPos.y, cameraPos.z);
                         if (distanceSq > MAX_DISTANCE_SQ) continue;
-                        
-                        if (!frustum.isVisible(lock.boundingBox)) continue;
                         
                         chunkLocks.add(lock);
                         visibleLocks.add(lock);
@@ -107,11 +109,13 @@ public class LockRenderer {
             }
         }
         
-        for (CachedLock lock : visibleLocks) {
-            renderLock(poseStack, bufferSource, level, lock, cameraPos);
+        if (!visibleLocks.isEmpty()) {
+            for (CachedLock lock : visibleLocks) {
+                renderLock(poseStack, bufferSource, level, lock, cameraPos);
+            }
+            bufferSource.endBatch();
         }
-        
-        bufferSource.endBatch();
+        */
     }
     
     private static void updateChunkCache(Level level, ChunkPos chunkPos) {
@@ -140,9 +144,12 @@ public class LockRenderer {
                                   Level level, CachedLock lock, Vec3 cameraPos) {
         poseStack.pushPose();
         
-        poseStack.translate(lock.pos.getX() - cameraPos.x, 
-                           lock.pos.getY() - cameraPos.y, 
-                           lock.pos.getZ() - cameraPos.z);
+        double dx = lock.pos.getX() - cameraPos.x;
+        double dy = lock.pos.getY() - cameraPos.y;
+        double dz = lock.pos.getZ() - cameraPos.z;
+        double distanceSq = dx * dx + dy * dy + dz * dz;
+        
+        poseStack.translate(dx, dy, dz);
         
         if (lock.isChest) {
             positionOnChest(poseStack, lock.state);
@@ -150,12 +157,9 @@ public class LockRenderer {
             positionOnBarrel(poseStack, lock.state);
         }
         
-        // Apply custom offsets
         poseStack.translate(LOCK_X_OFFSET, LOCK_Y_OFFSET, 0);
         
-        double distanceSq = lock.pos.distToCenterSqr(cameraPos.x, cameraPos.y, cameraPos.z);
-        float distance = (float) Math.sqrt(distanceSq);
-        float scale = Math.min(0.6f, 8.0f / distance) * LOCK_SCALE;
+        float scale = Math.min(0.6f, 8.0f / (float) Math.sqrt(distanceSq)) * LOCK_SCALE;
         poseStack.scale(scale, scale, scale);
         
         int light = LevelRenderer.getLightColor(level, lock.pos);

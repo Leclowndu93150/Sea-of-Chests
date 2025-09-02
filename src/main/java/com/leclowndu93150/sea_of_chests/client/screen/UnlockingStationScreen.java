@@ -25,7 +25,7 @@ public class UnlockingStationScreen extends AbstractContainerScreen<UnlockingSta
     protected void init() {
         super.init();
         this.inventoryLabelY = 10000;
-        this.titleLabelY = 10000;
+        this.titleLabelY = 6;
         
         this.unlockButton = Button.builder(
                 Component.literal("Start Unlocking"),
