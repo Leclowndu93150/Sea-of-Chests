@@ -16,6 +16,7 @@
     "carryon.PlacementHandlerMixin"
   ],
   "client": [
+    "ItemBlockRenderTypesMixin",
     "client.LevelRendererMixin"
   ],
   "injectors": {
