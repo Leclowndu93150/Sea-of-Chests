@@ -3,7 +3,6 @@ package com.leclowndu93150.sea_of_chests.block;
 import com.leclowndu93150.sea_of_chests.block.entity.UnlockingStationBlockEntity;
 import com.leclowndu93150.sea_of_chests.init.ModBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,15 +18,31 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class UnlockingStationBlock extends Block implements EntityBlock {
-    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D);
+    protected static final VoxelShape SHAPE = Shapes.or(
+            Block.box(0.0D, 2.0D, 0.0D, 16.0D, 16.0D, 16.0D), // Main body
+            Block.box(1.0D, 16.0D, 1.0D, 2.0D, 17.0D, 5.0D), // Top decorative elements
+            Block.box(1.0D, 16.0D, 11.0D, 2.0D, 17.0D, 15.0D),
+            Block.box(14.0D, 16.0D, 11.0D, 15.0D, 17.0D, 15.0D),
+            Block.box(14.0D, 16.0D, 1.0D, 15.0D, 17.0D, 5.0D),
+            Block.box(11.0D, 16.0D, 1.0D, 14.0D, 17.0D, 2.0D),
+            Block.box(11.0D, 16.0D, 14.0D, 14.0D, 17.0D, 15.0D),
+            Block.box(2.0D, 16.0D, 14.0D, 5.0D, 17.0D, 15.0D),
+            Block.box(2.0D, 16.0D, 1.0D, 5.0D, 17.0D, 2.0D),
+            Block.box(1.0D, 0.0D, 15.0D, 4.0D, 2.0D, 16.0D), // Bottom leg elements
+            Block.box(0.0D, 0.0D, 12.0D, 1.0D, 2.0D, 16.0D),
+            Block.box(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 4.0D),
+            Block.box(1.0D, 0.0D, 0.0D, 4.0D, 2.0D, 1.0D),
+            Block.box(12.0D, 0.0D, 0.0D, 15.0D, 2.0D, 1.0D),
+            Block.box(15.0D, 0.0D, 0.0D, 16.0D, 2.0D, 4.0D),
+            Block.box(15.0D, 0.0D, 12.0D, 16.0D, 2.0D, 16.0D),
+            Block.box(12.0D, 0.0D, 15.0D, 15.0D, 2.0D, 16.0D)
+    );
     
     public UnlockingStationBlock(Properties properties) {
         super(properties);
