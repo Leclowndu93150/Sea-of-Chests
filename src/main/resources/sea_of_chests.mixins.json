@@ -16,6 +16,7 @@
     "carryon.PlacementHandlerMixin"
   ],
   "client": [
+    "ChestRendererMixin",
     "ItemBlockRenderTypesMixin",
     "client.LevelRendererMixin"
   ],
