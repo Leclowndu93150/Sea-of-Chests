@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "i i",
+        "iCi",
+        "GOG"
+    ],
+    "key": {
+        "i": {
+            "item": "minecraft:iron_ingot"
+        },
+        "C": {
+            "item": "minecraft:cauldron"
+        },
+        "G": {
+            "item": "minecraft:cobbled_deepslate"
+        },
+        "O": {
+            "item": "minecraft:obsidian"
+        }
+    },
+    "result": {
+        "item": "sea_of_chests:unlocking_station",
+        "count": 1
+    }
+}
